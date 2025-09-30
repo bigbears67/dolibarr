@@ -102,17 +102,21 @@ class DocumentListController extends AbstractDocumentController
 			 * @param	array<string, mixed> $file  File (array) to get url for
 			 * @return	string						Url for file
 			 */
-			$linkBuilder
-				= static function (array $file) use ($client_dir_name) {
-					return DOL_URL_ROOT . '/document.php?modulepart=societe&attachment=1&file=' . urlencode($client_dir_name . '/' . $file['name']);
-				};
+			$linkBuilder = static function (array $file) use ($client_dir_name) {
+				return DOL_URL_ROOT . '/document.php?modulepart=societe&attachment=1&file=' . urlencode($client_dir_name . '/' . $file['name']);
+			};
 
-			// 3. Call the parent method to display the table
-			$this->displayDocumentTable(
+			// 3. Encapsulate the link builder in an array, as required by displayFileBrowser
+			$linkBuilderArray = [
+				'file' => $linkBuilder
+			];
+
+			// 4. Call the correct parent method (displayFileBrowser) with the correct parameter type
+			$this->displayFileBrowser(
 				$langs->trans('MyDocuments'),
 				$fileList,
 				$langs->trans('NoDocumentAvailable'),
-				$linkBuilder
+				$linkBuilderArray
 			);
 		}
 
